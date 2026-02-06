@@ -146,7 +146,7 @@ canvas {
 }
 .filtro-animal input {
   flex-grow: 1;
-  min-width: 200px; /* Ancho mínimo para el campo de texto */
+  min-width: 200px;
 }
 .filtro-animal button {
   background: var(--naranja);
@@ -253,7 +253,7 @@ canvas {
 
 <script>
 let datosReporte = {};
-let datosInventarioGeneral = []; // Variable global para los animales relevantes
+let datosInventarioGeneral = [];
 
 document.addEventListener('DOMContentLoaded', function() {
   console.log("🚀 Iniciando reporte de producción de leche...");
@@ -310,8 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renderizarGraficoProdDiaria();
     renderizarGraficoProdAvio();
     renderizarGraficoTopProductores();
-    // Renderizar el gráfico de trayectoria individual (vacío inicialmente)
-    renderizarGraficoTrayectoriaIndividual([]);
+    renderizarGraficoTrayectoriaIndividual([]); // Vacío inicialmente
 
     // Cargar el desplegable de animales
     cargarSelectAnimales();
@@ -325,23 +324,19 @@ document.addEventListener('DOMContentLoaded', function() {
       window.close();
     });
 
-    // --- NUEVO: Agregar evento onclick al botón de búsqueda ---
     document.getElementById("btnBuscarTrayectoria").onclick = function() {
          const idInput = document.getElementById("inputIdAnimal").value.trim();
          if (idInput) {
-             // Intenta buscar por ID ingresado
              buscarDatosTrayectoria(idInput);
-             // Opcional: Intentar seleccionar el ID en el dropdown si coincide
+             // Intentar seleccionar el ID en el dropdown si coincide
              const select = document.getElementById("selectAnimal");
-             const options = select.options;
-             for (let i = 0; i < options.length; i++) {
-                 if (options[i].value === idInput) {
+             for (let i = 0; i < select.options.length; i++) {
+                 if (select.options[i].value === idInput) {
                      select.selectedIndex = i;
                      break;
                  }
              }
          } else {
-             // Si no hay ID en el input, intenta usar el seleccionado en el dropdown
              const selectedId = document.getElementById("selectAnimal").value;
              if (selectedId) {
                  buscarDatosTrayectoria(selectedId);
@@ -364,19 +359,16 @@ function mostrarError(mensaje) {
   err.style.display = "block";
 }
 
-// --- NUEVA FUNCIÓN: Carga el desplegable con animales filtrados ---
 function cargarSelectAnimales() {
     const select = document.getElementById("selectAnimal");
-    select.innerHTML = '<option value="">Seleccione un animal...</option>'; // Limpiar opciones previas
+    select.innerHTML = '<option value="">Seleccione un animal...</option>';
 
     if (datosInventarioGeneral.length === 0) {
         select.innerHTML = '<option value="">No hay animales disponibles</option>';
         return;
     }
 
-    // Ordenar animales por número práctico o ID para mejor UX
     const animalesOrdenados = datosInventarioGeneral.sort((a, b) => {
-        // Comparar números prácticos si existen, sino IDs
         const numA = a['Número Práctico'] || a['ID'];
         const numB = b['Número Práctico'] || b['ID'];
         if (numA < numB) return -1;
@@ -386,29 +378,22 @@ function cargarSelectAnimales() {
 
     animalesOrdenados.forEach(animal => {
         const option = document.createElement("option");
-        // Mostrar número práctico si existe, sino ID
         const displayName = animal['Número Práctico'] || animal['ID'];
-        option.value = animal['ID']; // Siempre usar ID como valor para la búsqueda
+        option.value = animal['ID'];
         option.textContent = `${displayName} (${animal['Clasificación']})`;
         select.appendChild(option);
     });
 
-    // --- NUEVO: Agregar evento onchange al select ---
     select.onchange = function() {
          const selectedId = this.value;
          if (selectedId) {
-             // Actualizar el campo de texto con el ID seleccionado
              document.getElementById("inputIdAnimal").value = selectedId;
-             // Buscar la trayectoria
              buscarDatosTrayectoria(selectedId);
          }
     };
 }
-// --- FIN NUEVA FUNCIÓN ---
 
-// --- NUEVA FUNCIÓN: Busca datos de Pesaje de leche para un ID específico ---
 function buscarDatosTrayectoria(idAnimal) {
-    // Usar los datos de Pesaje de leche ya obtenidos en datosReporte
     const datosPesaje = datosReporte.pesajeLeche || [];
     const datosFiltrados = datosPesaje.filter(row => row.ID === idAnimal);
 
@@ -418,18 +403,13 @@ function buscarDatosTrayectoria(idAnimal) {
         return;
     }
 
-    // Ordenar por fecha
     const datosOrdenados = datosFiltrados.sort((a, b) => new Date(a.Fecha) - new Date(b.Fecha));
-
-    // Formatear datos para Chart.js
     const fechas = datosOrdenados.map(row => row.Fecha);
     const producciones = datosOrdenados.map(row => parseFloat(row.Producción) || 0);
 
     renderizarGraficoTrayectoriaIndividual({fechas, producciones});
 }
-// --- FIN NUEVA FUNCIÓN ---
 
-// --- NUEVA FUNCIÓN: Renderiza el gráfico de trayectoria individual ---
 function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
     const canvas = document.getElementById("graficoTrayectoriaIndividual");
     const container = canvas.parentElement;
@@ -444,16 +424,10 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
          return;
     }
 
-    // Limpiar mensaje de error si existía
     const existingErrorMsg = container.querySelector(".error-trayectoria");
-    if (existingErrorMsg) {
-        existingErrorMsg.remove();
-    }
+    if (existingErrorMsg) existingErrorMsg.remove();
 
-    // Verificar si ya existe un chart en este canvas y destruirlo
-    if (window.trayectoriaChartInstance) {
-        window.trayectoriaChartInstance.destroy();
-    }
+    if (window.trayectoriaChartInstance) window.trayectoriaChartInstance.destroy();
 
     const ctx = canvas.getContext("2d");
     window.trayectoriaChartInstance = new Chart(ctx, {
@@ -462,8 +436,8 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
           labels: datos.fechas,
           datasets: [{
             label: 'Producción (Lts)',
-            data: datos.producciones, // CORREGIDO: Asignar explícitamente el array
-            borderColor: '#8e44ad', // Morado
+            data: datos.producciones, // <--- CORREGIDO: Uso explícito de data
+            borderColor: '#8e44ad',
             backgroundColor: 'rgba(142, 68, 173, 0.1)',
             borderWidth: 3,
             fill: true,
@@ -478,10 +452,10 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: false }, // Ocultar leyenda para un gráfico simple
+            legend: { display: false },
             title: {
                 display: true,
-                text: `Producción de Leche - ID: ${datos.fechas.length > 0 ? document.getElementById("selectAnimal").selectedOptions[0]?.text?.split(' ')[0] || document.getElementById("inputIdAnimal").value : ''}`, // Mostrar ID o nombre tentativo
+                text: `Producción de Leche - ID: ${document.getElementById("selectAnimal").selectedOptions[0]?.text?.split(' ')[0] || document.getElementById("inputIdAnimal").value}`,
                 color: '#2c3e50'
             },
             tooltip: {
@@ -505,7 +479,6 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
         }
     });
 }
-// --- FIN NUEVA FUNCIÓN ---
 
 function renderizarGraficoProdDiaria() {
   const datos = datosReporte.prodDiaria;
@@ -521,11 +494,11 @@ function renderizarGraficoProdDiaria() {
   const ctx = document.getElementById("graficoProdDiaria").getContext("2d");
   new Chart(ctx, {
     type: 'line',
-     {
+    data: {
       labels: fechas,
       datasets: [{
         label: 'Producción (Lts)',
-         producciones, // CORREGIDO
+        data: producciones, // <--- CORREGIDO
         borderColor: '#f39c12',
         backgroundColor: 'rgba(243, 156, 18, 0.1)',
         borderWidth: 3,
@@ -572,7 +545,6 @@ function renderizarGraficoProdAvio() {
     return;
   }
 
-  // Agrupar datos por fecha y avío
   const datosAgrupados = {};
   datos.forEach(d => {
     if (!datosAgrupados[d.fecha]) {
@@ -597,14 +569,14 @@ function renderizarGraficoProdAvio() {
       datasets: [
         {
           label: 'Mañana (AM)',
-           produccionAM, // CORREGIDO
+          data: produccionAM, // <--- CORREGIDO
           backgroundColor: '#f1c40f',
           borderColor: '#f39c12',
           borderWidth: 1
         },
         {
           label: 'Tarde (PM)',
-           produccionPM, // CORREGIDO
+          data: produccionPM, // <--- CORREGIDO
           backgroundColor: '#e67e22',
           borderColor: '#d35400',
           borderWidth: 1
@@ -648,14 +620,14 @@ function renderizarGraficoTopProductores() {
       labels: ids,
       datasets: [{
         label: 'Promedio Producción (Lts/Día)',
-         promedios, // CORREGIDO
+        data: promedios, // <--- CORREGIDO
         backgroundColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 55%)`),
         borderColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 40%)`),
         borderWidth: 1
       }]
     },
     options: {
-      indexAxis: 'y', // Para gráfico horizontal
+      indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
