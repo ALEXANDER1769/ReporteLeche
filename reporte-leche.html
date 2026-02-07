@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Reporte de Producción de Leche - PYSIGA</title>
-<!-- ✅ Corregido: Eliminado espacio extra en URL de Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
@@ -157,7 +156,7 @@ canvas {
 
   <div id="contenido" style="display:none">
     
-    <!-- ===== KPIs Generales (Últimos 30 días) ===== -->
+    <!-- ===== KPIs Generales ===== -->
     <div class="section">
       <h2>📊 Resumen General (Últimos 30 días)</h2>
       <div class="kpi-container">
@@ -243,7 +242,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.log("📧 Email:", email);
 
-  // ✅ Corregido: Eliminado espacio extra en URL del Worker
   fetch("https://pysiga.d-alexjose.workers.dev", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -305,11 +303,11 @@ function renderizarGraficoProdDiaria() {
   const ctx = document.getElementById("graficoProdDiaria").getContext("2d");
   new Chart(ctx, {
     type: 'line',
-    data: {
+     {
       labels: fechas,
       datasets: [{
         label: 'Producción (Lts)',
-        data: producciones,
+         producciones,
         borderColor: '#f39c12',
         backgroundColor: 'rgba(243, 156, 18, 0.1)',
         borderWidth: 3,
@@ -375,19 +373,19 @@ function renderizarGraficoProdAvio() {
   const ctx = document.getElementById("graficoProdAvio").getContext("2d");
   new Chart(ctx, {
     type: 'bar',
-    data: {
+     {
       labels: fechas,
       datasets: [
         {
           label: 'Mañana (AM)',
-          data: produccionAM,
+           produccionAM,
           backgroundColor: '#f1c40f',
           borderColor: '#f39c12',
           borderWidth: 1
         },
         {
           label: 'Tarde (PM)',
-          data: produccionPM,
+           produccionPM,
           backgroundColor: '#e67e22',
           borderColor: '#d35400',
           borderWidth: 1
@@ -427,11 +425,11 @@ function renderizarGraficoTopProductores() {
   const ctx = document.getElementById("graficoTopProductores").getContext("2d");
   new Chart(ctx, {
     type: 'bar',
-    data: {
+     {
       labels: ids,
       datasets: [{
         label: 'Promedio Producción (Lts/Día)',
-        data: promedios,
+         promedios,
         backgroundColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 55%)`),
         borderColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 40%)`),
         borderWidth: 1
@@ -466,3 +464,4 @@ function mostrarError(mensaje) {
 </script>
 </body>
 </html>
+
