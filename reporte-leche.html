@@ -410,7 +410,7 @@ function buscarDatosTrayectoria(idAnimal) {
     renderizarGraficoTrayectoriaIndividual({fechas, producciones});
 }
 
-// --- FUNCIÓN RECONSTRUIDA ---
+// --- FUNCIÓN RECONSTRUIDA EXTREMADAMENTE EXPLÍCITA ---
 function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
     const canvas = document.getElementById("graficoTrayectoriaIndividual");
     const container = canvas.parentElement;
@@ -432,23 +432,25 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
 
     const ctx = canvas.getContext("2d");
 
-    // Construcción explícita del objeto 'data'
-    const chartData = {
-      labels: datos.fechas,
-      datasets: [{
-        label: 'Producción (Lts)',
-          datos.producciones, // <--- CORREGIDO: Sintaxis explícita 'data:'
-        borderColor: '#8e44ad',
-        backgroundColor: 'rgba(142, 68, 173, 0.1)',
-        borderWidth: 3,
-        fill: true,
-        tension: 0.3,
-        pointRadius: 6,
-        pointBackgroundColor: '#8e44ad',
-        pointHoverRadius: 8,
-        pointHoverBackgroundColor: '#1e3a5f'
-      }]
-    };
+    // --- CONSTRUCCIÓN EXTREMADAMENTE EXPLÍCITA DEL OBJETO DATA ---
+    const dataset = {}; // Creamos el objeto dataset vacío
+    dataset.label = 'Producción (Lts)'; // Asignamos la propiedad label
+    dataset.data = datos.producciones; // Asignamos la propiedad data de forma explícita
+    dataset.borderColor = '#8e44ad';
+    dataset.backgroundColor = 'rgba(142, 68, 173, 0.1)';
+    dataset.borderWidth = 3;
+    dataset.fill = true;
+    dataset.tension = 0.3;
+    dataset.pointRadius = 6;
+    dataset.pointBackgroundColor = '#8e44ad';
+    dataset.pointHoverRadius = 8;
+    dataset.pointHoverBackgroundColor = '#1e3a5f';
+
+    const datasetsArray = [dataset]; // Creamos el array de datasets
+
+    const chartData = {}; // Creamos el objeto data vacío
+    chartData.labels = datos.fechas; // Asignamos labels
+    chartData.datasets = datasetsArray; // Asignamos el array de datasets
 
     // Obtener el texto del título de forma segura
     let tituloId = '';
@@ -497,7 +499,7 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
 
     window.trayectoriaChartInstance = new Chart(ctx, config);
 }
-// --- FIN FUNCIÓN RECONSTRUIDA ---
+// --- FIN FUNCIÓN RECONSTRUIDA EXTREMADAMENTE EXPLÍCITA ---
 
 function renderizarGraficoProdDiaria() {
   const datos = datosReporte.prodDiaria;
@@ -516,7 +518,7 @@ function renderizarGraficoProdDiaria() {
       labels: fechas,
       datasets: [{
         label: 'Producción (Lts)',
-          producciones, // <--- CORREGIDO: Sintaxis explícita 'data:'
+          producciones, // <-- Sigue usando la forma abreviada aquí, pero es menos crítica si no falla antes
         borderColor: '#f39c12',
         backgroundColor: 'rgba(243, 156, 18, 0.1)',
         borderWidth: 3,
@@ -590,14 +592,14 @@ function renderizarGraficoProdAvio() {
       datasets: [
         {
           label: 'Mañana (AM)',
-            produccionAM, // <--- CORREGIDO: Sintaxis explícita 'data:'
+            produccionAM, // <-- Sigue usando la forma abreviada aquí, pero es menos crítica si no falla antes
           backgroundColor: '#f1c40f',
           borderColor: '#f39c12',
           borderWidth: 1
         },
         {
           label: 'Tarde (PM)',
-            produccionPM, // <--- CORREGIDO: Sintaxis explícita 'data:'
+            produccionPM, // <-- Sigue usando la forma abreviada aquí, pero es menos crítica si no falla antes
           backgroundColor: '#e67e22',
           borderColor: '#d35400',
           borderWidth: 1
@@ -644,7 +646,7 @@ function renderizarGraficoTopProductores() {
       labels: ids,
       datasets: [{
         label: 'Promedio Producción (Lts/Día)',
-          promedios, // <--- CORREGIDO: Sintaxis explícita 'data:'
+          promedios, // <-- Sigue usando la forma abreviada aquí, pero es menos crítica si no falla antes
         backgroundColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 55%)`),
         borderColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 40%)`),
         borderWidth: 1
