@@ -410,7 +410,7 @@ function buscarDatosTrayectoria(idAnimal) {
     renderizarGraficoTrayectoriaIndividual({fechas, producciones});
 }
 
-// --- FUNCIÓN CORREGIDA ---
+// --- FUNCIÓN RECONSTRUIDA ---
 function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
     const canvas = document.getElementById("graficoTrayectoriaIndividual");
     const container = canvas.parentElement;
@@ -420,38 +420,40 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
         return;
     }
 
-    // Corrección aquí: Verifica si 'datos' existe Y si 'datos.fechas' existe Y su longitud
     if (!datos || !datos.fechas || datos.fechas.length === 0) {
          container.innerHTML = "<p style='text-align:center;color:#999'>Seleccione un animal y presione 'Buscar Trayectoria'</p>";
          return;
     }
 
-    // Limpiar mensaje de error si existía
     const existingErrorMsg = container.querySelector(".error-trayectoria");
     if (existingErrorMsg) existingErrorMsg.remove();
 
-    // Verificar si ya existe un chart en este canvas y destruirlo
     if (window.trayectoriaChartInstance) window.trayectoriaChartInstance.destroy();
 
     const ctx = canvas.getContext("2d");
-    window.trayectoriaChartInstance = new Chart(ctx, {
+
+    // Construcción explícita del objeto 'data'
+    const chartData = {
+      labels: datos.fechas,
+      datasets: [{
+        label: 'Producción (Lts)',
+         datos.producciones, // <-- Aquí se usa la abreviatura DENTRO del objeto data
+        borderColor: '#8e44ad',
+        backgroundColor: 'rgba(142, 68, 173, 0.1)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.3,
+        pointRadius: 6,
+        pointBackgroundColor: '#8e44ad',
+        pointHoverRadius: 8,
+        pointHoverBackgroundColor: '#1e3a5f'
+      }]
+    };
+
+    // Objeto de configuración completo
+    const config = {
         type: 'line',
-         {
-          labels: datos.fechas,
-          datasets: [{
-            label: 'Producción (Lts)',
-              data: datos.producciones, // <--- CORREGIDO: Uso explícito de 'data:'
-            borderColor: '#8e44ad',
-            backgroundColor: 'rgba(142, 68, 173, 0.1)',
-            borderWidth: 3,
-            fill: true,
-            tension: 0.3,
-            pointRadius: 6,
-            pointBackgroundColor: '#8e44ad',
-            pointHoverRadius: 8,
-            pointHoverBackgroundColor: '#1e3a5f'
-          }]
-        },
+        data: chartData, // <-- Aquí se asigna el objeto 'data' construido
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -481,9 +483,11 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
             }
           }
         }
-    });
+    };
+
+    window.trayectoriaChartInstance = new Chart(ctx, config);
 }
-// --- FIN FUNCIÓN CORREGIDA ---
+// --- FIN FUNCIÓN RECONSTRUIDA ---
 
 function renderizarGraficoProdDiaria() {
   const datos = datosReporte.prodDiaria;
@@ -497,13 +501,12 @@ function renderizarGraficoProdDiaria() {
   const producciones = datos.map(d => d.produccion);
 
   const ctx = document.getElementById("graficoProdDiaria").getContext("2d");
-  new Chart(ctx, {
-    type: 'line',
-     {
+
+  const chartData = {
       labels: fechas,
       datasets: [{
         label: 'Producción (Lts)',
-          data: producciones, // <--- CORREGIDO: Uso explícito de 'data:'
+         producciones,
         borderColor: '#f39c12',
         backgroundColor: 'rgba(243, 156, 18, 0.1)',
         borderWidth: 3,
@@ -514,7 +517,11 @@ function renderizarGraficoProdDiaria() {
         pointHoverRadius: 7,
         pointHoverBackgroundColor: '#1e3a5f'
       }]
-    },
+    };
+
+  new Chart(ctx, {
+    type: 'line',
+    data: chartData, // <-- Asignación del objeto data construido
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -567,27 +574,30 @@ function renderizarGraficoProdAvio() {
   const produccionPM = fechas.map(fecha => datosAgrupados[fecha].pm);
 
   const ctx = document.getElementById("graficoProdAvio").getContext("2d");
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
+
+  const chartData = {
       labels: fechas,
       datasets: [
         {
           label: 'Mañana (AM)',
-            data: produccionAM, // <--- CORREGIDO: Uso explícito de 'data:'
+           produccionAM,
           backgroundColor: '#f1c40f',
           borderColor: '#f39c12',
           borderWidth: 1
         },
         {
           label: 'Tarde (PM)',
-            data: produccionPM, // <--- CORREGIDO: Uso explícito de 'data:'
+           produccionPM,
           backgroundColor: '#e67e22',
           borderColor: '#d35400',
           borderWidth: 1
         }
       ]
-    },
+    };
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: chartData, // <-- Asignación del objeto data construido
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -619,18 +629,21 @@ function renderizarGraficoTopProductores() {
   const promedios = datos.map(d => d.promedioProduccion);
 
   const ctx = document.getElementById("graficoTopProductores").getContext("2d");
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
+
+  const chartData = {
       labels: ids,
       datasets: [{
         label: 'Promedio Producción (Lts/Día)',
-          data: promedios, // <--- CORREGIDO: Uso explícito de 'data:'
+         promedios,
         backgroundColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 55%)`),
         borderColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 40%)`),
         borderWidth: 1
       }]
-    },
+    };
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: chartData, // <-- Asignación del objeto data construido
     options: {
       indexAxis: 'y',
       responsive: true,
@@ -654,3 +667,4 @@ function renderizarGraficoTopProductores() {
 </script>
 </body>
 </html>
+
