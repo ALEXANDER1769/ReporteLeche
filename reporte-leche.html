@@ -450,10 +450,20 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
       }]
     };
 
+    // Obtener el texto del título de forma segura
+    let tituloId = '';
+    const selectElement = document.getElementById("selectAnimal");
+    const inputElement = document.getElementById("inputIdAnimal");
+    if (selectElement && selectElement.selectedOptions[0] && selectElement.selectedOptions[0].text) {
+        tituloId = selectElement.selectedOptions[0].text.split(' ')[0];
+    } else if (inputElement && inputElement.value) {
+        tituloId = inputElement.value;
+    }
+
     // Objeto de configuración completo
     const config = {
         type: 'line',
-        data: chartData, // <-- Aquí se asigna el objeto 'data' construido
+         chartData, // <-- Aquí se asigna el objeto 'data' construido
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -461,7 +471,7 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
             legend: { display: false },
             title: {
                 display: true,
-                text: `Producción de Leche - ID: ${document.getElementById("selectAnimal").selectedOptions[0]?.text?.split(' ')[0] || document.getElementById("inputIdAnimal").value}`,
+                text: `Producción de Leche - ID: ${tituloId}`,
                 color: '#2c3e50'
             },
             tooltip: {
@@ -521,7 +531,7 @@ function renderizarGraficoProdDiaria() {
 
   new Chart(ctx, {
     type: 'line',
-    data: chartData, // <-- Asignación del objeto data construido
+     chartData, // <-- Asignación del objeto data construido
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -597,7 +607,7 @@ function renderizarGraficoProdAvio() {
 
   new Chart(ctx, {
     type: 'bar',
-    data: chartData, // <-- Asignación del objeto data construido
+     chartData, // <-- Asignación del objeto data construido
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -643,7 +653,7 @@ function renderizarGraficoTopProductores() {
 
   new Chart(ctx, {
     type: 'bar',
-    data: chartData, // <-- Asignación del objeto data construido
+     chartData, // <-- Asignación del objeto data construido
     options: {
       indexAxis: 'y',
       responsive: true,
@@ -667,4 +677,3 @@ function renderizarGraficoTopProductores() {
 </script>
 </body>
 </html>
-
