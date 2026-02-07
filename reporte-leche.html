@@ -410,6 +410,7 @@ function buscarDatosTrayectoria(idAnimal) {
     renderizarGraficoTrayectoriaIndividual({fechas, producciones});
 }
 
+// --- FUNCIÓN CORREGIDA ---
 function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
     const canvas = document.getElementById("graficoTrayectoriaIndividual");
     const container = canvas.parentElement;
@@ -419,14 +420,17 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
         return;
     }
 
-    if (!datos || datos.fechas.length === 0) {
+    // Corrección aquí: Verifica si 'datos' existe Y si 'datos.fechas' existe Y su longitud
+    if (!datos || !datos.fechas || datos.fechas.length === 0) {
          container.innerHTML = "<p style='text-align:center;color:#999'>Seleccione un animal y presione 'Buscar Trayectoria'</p>";
          return;
     }
 
+    // Limpiar mensaje de error si existía
     const existingErrorMsg = container.querySelector(".error-trayectoria");
     if (existingErrorMsg) existingErrorMsg.remove();
 
+    // Verificar si ya existe un chart en este canvas y destruirlo
     if (window.trayectoriaChartInstance) window.trayectoriaChartInstance.destroy();
 
     const ctx = canvas.getContext("2d");
@@ -436,7 +440,7 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
           labels: datos.fechas,
           datasets: [{
             label: 'Producción (Lts)',
-            data: datos.producciones, // <--- CORREGIDO: Uso explícito de data
+             datos.producciones, // Asegúrate que 'datos.producciones' sea un array
             borderColor: '#8e44ad',
             backgroundColor: 'rgba(142, 68, 173, 0.1)',
             borderWidth: 3,
@@ -479,6 +483,7 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
         }
     });
 }
+// --- FIN FUNCIÓN CORREGIDA ---
 
 function renderizarGraficoProdDiaria() {
   const datos = datosReporte.prodDiaria;
@@ -494,11 +499,11 @@ function renderizarGraficoProdDiaria() {
   const ctx = document.getElementById("graficoProdDiaria").getContext("2d");
   new Chart(ctx, {
     type: 'line',
-    data: {
+     {
       labels: fechas,
       datasets: [{
         label: 'Producción (Lts)',
-        data: producciones, // <--- CORREGIDO
+         producciones,
         borderColor: '#f39c12',
         backgroundColor: 'rgba(243, 156, 18, 0.1)',
         borderWidth: 3,
@@ -569,14 +574,14 @@ function renderizarGraficoProdAvio() {
       datasets: [
         {
           label: 'Mañana (AM)',
-          data: produccionAM, // <--- CORREGIDO
+           produccionAM,
           backgroundColor: '#f1c40f',
           borderColor: '#f39c12',
           borderWidth: 1
         },
         {
           label: 'Tarde (PM)',
-          data: produccionPM, // <--- CORREGIDO
+           produccionPM,
           backgroundColor: '#e67e22',
           borderColor: '#d35400',
           borderWidth: 1
@@ -620,7 +625,7 @@ function renderizarGraficoTopProductores() {
       labels: ids,
       datasets: [{
         label: 'Promedio Producción (Lts/Día)',
-        data: promedios, // <--- CORREGIDO
+         promedios,
         backgroundColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 55%)`),
         borderColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 40%)`),
         borderWidth: 1
