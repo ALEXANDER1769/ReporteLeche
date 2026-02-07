@@ -436,11 +436,11 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
     const ctx = canvas.getContext("2d");
     window.trayectoriaChartInstance = new Chart(ctx, {
         type: 'line',
-        data: {
+         {
           labels: datos.fechas,
           datasets: [{
             label: 'Producción (Lts)',
-             datos.producciones, // Asegúrate que 'datos.producciones' sea un array
+             data: datos.producciones, // <--- CORREGIDO: Uso explícito de 'data:'
             borderColor: '#8e44ad',
             backgroundColor: 'rgba(142, 68, 173, 0.1)',
             borderWidth: 3,
@@ -503,7 +503,7 @@ function renderizarGraficoProdDiaria() {
       labels: fechas,
       datasets: [{
         label: 'Producción (Lts)',
-         producciones,
+         data: producciones, // <--- CORREGIDO: Uso explícito de 'data:'
         borderColor: '#f39c12',
         backgroundColor: 'rgba(243, 156, 18, 0.1)',
         borderWidth: 3,
@@ -574,14 +574,14 @@ function renderizarGraficoProdAvio() {
       datasets: [
         {
           label: 'Mañana (AM)',
-           produccionAM,
+           data: produccionAM, // <--- CORREGIDO: Uso explícito de 'data:'
           backgroundColor: '#f1c40f',
           borderColor: '#f39c12',
           borderWidth: 1
         },
         {
           label: 'Tarde (PM)',
-           produccionPM,
+           data: produccionPM, // <--- CORREGIDO: Uso explícito de 'data:'
           backgroundColor: '#e67e22',
           borderColor: '#d35400',
           borderWidth: 1
@@ -625,7 +625,7 @@ function renderizarGraficoTopProductores() {
       labels: ids,
       datasets: [{
         label: 'Promedio Producción (Lts/Día)',
-         promedios,
+         data: promedios, // <--- CORREGIDO: Uso explícito de 'data:'
         backgroundColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 55%)`),
         borderColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 40%)`),
         borderWidth: 1
