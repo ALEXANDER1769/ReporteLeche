@@ -410,13 +410,19 @@ function buscarDatosTrayectoria(idAnimal) {
     renderizarGraficoTrayectoriaIndividual({fechas, producciones});
 }
 
-// --- FUNCIÓN CORREGIDA: Manejo de canvas inexistente ---
+// --- FUNCIÓN CORREGIDA: Busca el canvas dentro de la función ---
 function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
+    // Buscar el canvas DENTRO de la función para garantizar que exista
     const canvas = document.getElementById("graficoTrayectoriaIndividual");
 
     // Verificar si el canvas existe antes de continuar
     if (!canvas) {
         console.error("Canvas con ID 'graficoTrayectoriaIndividual' no encontrado en el DOM.");
+        // Opcional: Intentar buscar el contenedor padre y mostrar el error allí
+        const containerDiv = document.querySelector('.filtro-animal .grafico-container'); // Selector más específico
+        if (containerDiv) {
+            containerDiv.innerHTML = "<p style='color: #c0392b; text-align: center;'>Error: Elemento gráfico no disponible.</p>";
+        }
         return; // Salir si no existe
     }
 
@@ -442,9 +448,9 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
     const ctx = canvas.getContext("2d");
 
     // --- CONSTRUCCIÓN EXTREMADAMENTE EXPLÍCITA DEL OBJETO DATA ---
-    const dataset = {}; // Creamos el objeto dataset vacío
-    dataset.label = 'Producción (Lts)'; // Asignamos la propiedad label
-    dataset.data = datos.producciones; // Asignamos la propiedad data de forma explícita
+    const dataset = {};
+    dataset.label = 'Producción (Lts)';
+    dataset.data = datos.producciones;
     dataset.borderColor = '#8e44ad';
     dataset.backgroundColor = 'rgba(142, 68, 173, 0.1)';
     dataset.borderWidth = 3;
@@ -455,11 +461,11 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
     dataset.pointHoverRadius = 8;
     dataset.pointHoverBackgroundColor = '#1e3a5f';
 
-    const datasetsArray = [dataset]; // Creamos el array de datasets
+    const datasetsArray = [dataset];
 
-    const chartData = {}; // Creamos el objeto data vacío
-    chartData.labels = datos.fechas; // Asignamos labels
-    chartData.datasets = datasetsArray; // Asignamos el array de datasets
+    const chartData = {};
+    chartData.labels = datos.fechas;
+    chartData.datasets = datasetsArray;
 
     // Obtener el texto del título de forma segura
     let tituloId = '';
@@ -474,7 +480,7 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
     // Objeto de configuración completo
     const config = {
         type: 'line',
-         chartData, // <-- Aquí se asigna el objeto 'data' construido
+         chartData,
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -527,7 +533,7 @@ function renderizarGraficoProdDiaria() {
       labels: fechas,
       datasets: [{
         label: 'Producción (Lts)',
-          producciones, // <-- Sigue usando la forma abreviada aquí, pero es menos crítica si no falla antes
+          producciones,
         borderColor: '#f39c12',
         backgroundColor: 'rgba(243, 156, 18, 0.1)',
         borderWidth: 3,
@@ -542,7 +548,7 @@ function renderizarGraficoProdDiaria() {
 
   new Chart(ctx, {
     type: 'line',
-     chartData, // <-- Asignación del objeto data construido
+     chartData,
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -601,14 +607,14 @@ function renderizarGraficoProdAvio() {
       datasets: [
         {
           label: 'Mañana (AM)',
-            produccionAM, // <-- Sigue usando la forma abreviada aquí, pero es menos crítica si no falla antes
+            produccionAM,
           backgroundColor: '#f1c40f',
           borderColor: '#f39c12',
           borderWidth: 1
         },
         {
           label: 'Tarde (PM)',
-            produccionPM, // <-- Sigue usando la forma abreviada aquí, pero es menos crítica si no falla antes
+            produccionPM,
           backgroundColor: '#e67e22',
           borderColor: '#d35400',
           borderWidth: 1
@@ -618,7 +624,7 @@ function renderizarGraficoProdAvio() {
 
   new Chart(ctx, {
     type: 'bar',
-     chartData, // <-- Asignación del objeto data construido
+     chartData,
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -655,7 +661,7 @@ function renderizarGraficoTopProductores() {
       labels: ids,
       datasets: [{
         label: 'Promedio Producción (Lts/Día)',
-          promedios, // <-- Sigue usando la forma abreviada aquí, pero es menos crítica si no falla antes
+          promedios,
         backgroundColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 55%)`),
         borderColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 40%)`),
         borderWidth: 1
@@ -664,7 +670,7 @@ function renderizarGraficoTopProductores() {
 
   new Chart(ctx, {
     type: 'bar',
-     chartData, // <-- Asignación del objeto data construido
+     chartData,
     options: {
       indexAxis: 'y',
       responsive: true,
