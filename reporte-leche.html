@@ -410,10 +410,17 @@ function buscarDatosTrayectoria(idAnimal) {
     renderizarGraficoTrayectoriaIndividual({fechas, producciones});
 }
 
-// --- FUNCIÓN RECONSTRUIDA EXTREMADAMENTE EXPLÍCITA ---
+// --- FUNCIÓN CORREGIDA: Manejo de canvas inexistente ---
 function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
     const canvas = document.getElementById("graficoTrayectoriaIndividual");
-    const container = canvas.parentElement;
+
+    // Verificar si el canvas existe antes de continuar
+    if (!canvas) {
+        console.error("Canvas con ID 'graficoTrayectoriaIndividual' no encontrado en el DOM.");
+        return; // Salir si no existe
+    }
+
+    const container = canvas.parentElement; // <-- Ahora es seguro acceder a parentElement
 
     if (mensajeError) {
         container.innerHTML = `<div class="error-trayectoria">${mensajeError}</div>`;
@@ -425,9 +432,11 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
          return;
     }
 
+    // Limpiar mensaje de error si existía
     const existingErrorMsg = container.querySelector(".error-trayectoria");
     if (existingErrorMsg) existingErrorMsg.remove();
 
+    // Verificar si ya existe un chart en este canvas y destruirlo
     if (window.trayectoriaChartInstance) window.trayectoriaChartInstance.destroy();
 
     const ctx = canvas.getContext("2d");
@@ -499,7 +508,7 @@ function renderizarGraficoTrayectoriaIndividual(datos, mensajeError = "") {
 
     window.trayectoriaChartInstance = new Chart(ctx, config);
 }
-// --- FIN FUNCIÓN RECONSTRUIDA EXTREMADAMENTE EXPLÍCITA ---
+// --- FIN FUNCIÓN CORREGIDA ---
 
 function renderizarGraficoProdDiaria() {
   const datos = datosReporte.prodDiaria;
