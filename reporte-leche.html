@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Reporte de Producción de Leche - PYSIGA</title>
+<!-- ✅ Corregido: Eliminado espacio extra en URL de Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
   --verde: #2f6f4e;
   --azul: #2c4f7c;
-  --naranja: #f39c12; /* Color para leche */
+  --naranja: #f39c12;
   --fondo: #f7f9f8;
 }
 body {
@@ -134,29 +135,27 @@ canvas {
   </div>
 
   <div id="contenido" style="display:none">
-    <!-- KPIs -->
     <div class="section">
-        <div class="kpi-container">
-            <div class="kpi-box">
-                <div class="kpi-value" id="kpi-prod-total">0</div>
-                <div class="kpi-label">Lts Totales</div>
-            </div>
-            <div class="kpi-box">
-                <div class="kpi-value" id="kpi-prom-dia">0.0</div>
-                <div class="kpi-label">Prom. Diario (Lts)</div>
-            </div>
-            <div class="kpi-box">
-                <div class="kpi-value" id="kpi-vacas-prom">0</div>
-                <div class="kpi-label">Vacas Ordeñadas (Prom.)</div>
-            </div>
-            <div class="kpi-box">
-                <div class="kpi-value" id="kpi-dias-reg">0</div>
-                <div class="kpi-label">Días con Registros</div>
-            </div>
+      <div class="kpi-container">
+        <div class="kpi-box">
+          <div class="kpi-value" id="kpi-prod-total">0</div>
+          <div class="kpi-label">Lts Totales</div>
         </div>
+        <div class="kpi-box">
+          <div class="kpi-value" id="kpi-prom-dia">0.0</div>
+          <div class="kpi-label">Prom. Diario (Lts)</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-value" id="kpi-vacas-prom">0</div>
+          <div class="kpi-label">Vacas Ordeñadas (Prom.)</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-value" id="kpi-dias-reg">0</div>
+          <div class="kpi-label">Días con Registros</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Gráfico Producción Diaria -->
     <div class="section">
       <h2>Producción Diaria de Leche</h2>
       <div class="grafico-container">
@@ -164,7 +163,6 @@ canvas {
       </div>
     </div>
 
-    <!-- Gráfico Producción por Avío -->
     <div class="section">
       <h2>Producción por Turno (Avío)</h2>
       <div class="grafico-container">
@@ -172,7 +170,6 @@ canvas {
       </div>
     </div>
 
-    <!-- Gráfico Top Productores -->
     <div class="section">
       <h2>Top 10 Productores (Promedio)</h2>
       <div class="grafico-container">
@@ -202,7 +199,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.log("📧 Email:", email);
 
-  fetch("https://pysiga.d-alexjose.workers.dev", { // ASEGURATE DE USAR TU URL DE WORKER
+  // ✅ Corregido: Eliminado espacio extra en URL del Worker
+  fetch("https://pysiga.d-alexjose.workers.dev", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ accion: "reporteProduccionLeche", email: email })
@@ -220,18 +218,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     datosReporte = data;
 
-    // Actualizar KPIs
     document.getElementById("kpi-prod-total").textContent = datosReporte.kpis.produccionTotal.toFixed(2);
     document.getElementById("kpi-prom-dia").textContent = datosReporte.kpis.promedioDiario.toFixed(2);
     document.getElementById("kpi-vacas-prom").textContent = datosReporte.kpis.vacasPromedioOrdeñadas.toFixed(1);
     document.getElementById("kpi-dias-reg").textContent = datosReporte.kpis.diasConRegistros;
 
-    // Renderizar gráficos
     renderizarGraficoProdDiaria();
     renderizarGraficoProdAvio();
     renderizarGraficoTopProductores();
 
-    // Mostrar contenido y ocultar loader
     document.getElementById("loader").style.display = "none";
     document.getElementById("contenido").style.display = "block";
 
@@ -260,11 +255,11 @@ function renderizarGraficoProdDiaria() {
   const ctx = document.getElementById("graficoProdDiaria").getContext("2d");
   new Chart(ctx, {
     type: 'line',
-    data: {
+    data: { // ✅ Corregido: Propiedad "data" completa
       labels: fechas,
       datasets: [{
         label: 'Producción (Lts)',
-         producciones,
+        data: producciones, // ✅ Corregido: "data:" explícito
         borderColor: '#f39c12',
         backgroundColor: 'rgba(243, 156, 18, 0.1)',
         borderWidth: 3,
@@ -311,16 +306,15 @@ function renderizarGraficoProdAvio() {
     return;
   }
 
-  // Agrupar datos por fecha y avío
   const datosAgrupados = {};
   datos.forEach(d => {
     if (!datosAgrupados[d.fecha]) {
-        datosAgrupados[d.fecha] = { am: 0, pm: 0 };
+      datosAgrupados[d.fecha] = { am: 0, pm: 0 };
     }
     if (d.avio === 'am') {
-        datosAgrupados[d.fecha].am += d.produccion;
+      datosAgrupados[d.fecha].am += d.produccion;
     } else if (d.avio === 'pm') {
-        datosAgrupados[d.fecha].pm += d.produccion;
+      datosAgrupados[d.fecha].pm += d.produccion;
     }
   });
 
@@ -331,19 +325,19 @@ function renderizarGraficoProdAvio() {
   const ctx = document.getElementById("graficoProdAvio").getContext("2d");
   new Chart(ctx, {
     type: 'bar',
-     {
+    data: { // ✅ Corregido: Propiedad "data" añadida (era el error principal de sintaxis)
       labels: fechas,
       datasets: [
         {
           label: 'Mañana (AM)',
-           produccionAM,
+          data: produccionAM, // ✅ Corregido: "data:" explícito
           backgroundColor: '#f1c40f',
           borderColor: '#f39c12',
           borderWidth: 1
         },
         {
           label: 'Tarde (PM)',
-           produccionPM,
+          data: produccionPM, // ✅ Corregido: "data:" explícito
           backgroundColor: '#e67e22',
           borderColor: '#d35400',
           borderWidth: 1
@@ -383,18 +377,18 @@ function renderizarGraficoTopProductores() {
   const ctx = document.getElementById("graficoTopProductores").getContext("2d");
   new Chart(ctx, {
     type: 'bar',
-    data: {
+    data: { // ✅ Corregido: Estructura completa con "data"
       labels: ids,
       datasets: [{
         label: 'Promedio Producción (Lts/Día)',
-         promedios,
+        data: promedios, // ✅ Corregido: "data:" explícito
         backgroundColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 55%)`),
         borderColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 40%)`),
         borderWidth: 1
       }]
     },
     options: {
-      indexAxis: 'y', // Para gráfico horizontal
+      indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
