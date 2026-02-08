@@ -181,10 +181,11 @@ canvas {
       </div>
     </div>
 
+    <!-- Nueva Sección: Distribución por Rangos -->
     <div class="section">
-      <h2>Top 10 Productores (Promedio)</h2>
+      <h2>Distribución de Animales por Rango de Producción (Lts/Día)</h2>
       <div class="grafico-container">
-        <canvas id="graficoTopProductores"></canvas>
+        <canvas id="graficoDistribucionRangos"></canvas>
       </div>
     </div>
 
@@ -241,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     renderizarGraficoProdDiaria();
     renderizarGraficoProdAvio();
-    renderizarGraficoTopProductores();
+    renderizarGraficoDistribucionRangos(); // Nuevo
 
     document.getElementById("loader").style.display = "none";
     document.getElementById("contenido").style.display = "block";
@@ -379,45 +380,61 @@ function renderizarGraficoProdAvio() {
   });
 }
 
-function renderizarGraficoTopProductores() {
-  const datos = datosReporte.topProductores;
-  if (datos.length === 0) {
-    document.getElementById("graficoTopProductores").parentElement.innerHTML =
-      "<p style='text-align:center;color:#999'>No hay datos de promedio de productores</p>";
-    return;
-  }
+// Nuevo: Función para renderizar la gráfica de distribución por rangos
+function renderizarGraficoDistribucionRangos() {
+  const distribucion = datosReporte.distribucionPorRango;
 
-  const ids = datos.map(d => d.numeroPractico || d.id);
-  const promedios = datos.map(d => d.promedioProduccion);
+  const rangos = Object.keys(distribucion);
+  const cantidades = Object.values(distribucion);
 
-  const ctx = document.getElementById("graficoTopProductores").getContext("2d");
+  const ctx = document.getElementById("graficoDistribucionRangos").getContext("2d");
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ids,
+      labels: rangos,
       datasets: [{
-        label: 'Promedio Producción (Lts/Día)',
-        data: promedios,
-        backgroundColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 55%)`),
-        borderColor: ids.map((_, i) => `hsl(${i * 30}, 60%, 40%)`),
+        label: 'Cantidad de Animales',
+        data: cantidades,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.7)',
+          'rgba(54, 162, 235, 0.7)',
+          'rgba(255, 205, 86, 0.7)',
+          'rgba(75, 192, 192, 0.7)',
+          'rgba(153, 102, 255, 0.7)',
+          'rgba(255, 159, 64, 0.7)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 205, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
         borderWidth: 1
       }]
     },
     options: {
-      indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { display: false },
+        legend: { display: true },
         tooltip: {
           callbacks: {
-            label: context => `${context.parsed.x.toFixed(2)} Lts/Día`
+            label: context => `Animales: ${context.parsed.y}`
           }
         }
       },
       scales: {
-        x: { beginAtZero: true, title: { display: true, text: 'Litros por Día' } },
-        y: { title: { display: true, text: 'ID Animal' } }
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Cantidad de Animales' },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        },
+        x: {
+          title: { display: true, text: 'Rango de Producción (Lts/Día)' },
+          grid: { display: false }
+        }
       }
     }
   });
