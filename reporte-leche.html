@@ -2,200 +2,190 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Reporte de Producción de Leche - PYSIGA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🥛 Reporte de Producción de Leche - PYSIGA</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-:root {
-  --verde: #2f6f4e;
-  --azul: #2c4f7c;
-  --naranja: #f39c12;
-  --fondo: #f7f9f8;
+:root { 
+  /* COLORES VIVOS Y MODERNOS (FLAT DESIGN) */
+  --verde: #00b894; 
+  --verde-claro: #55efc4; 
+  --azul: #0984e3; 
+  --azul-claro: #74b9ff;
+  --tierra: #e17055; 
+  --rojo: #d63031; 
+  --rojo-claro: #fab1a0;
+  --gris: #636e72; 
+  --gris-claro: #dfe6e9;
+  --morado: #6c5ce7; 
+  --amarillo: #fdcb6e;
+  --fondo: #f4f6f8; 
+  --blanco: #ffffff; 
+  --borde: #dfe6e9;
 }
-body {
-  font-family: system-ui, Arial;
-  background: var(--fondo);
-  margin: 0;
-  padding: 20px;
-}
-.container {
-  max-width: 1200px;
-  margin: auto;
-  background: white;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-}
-h1 {
-  color: var(--naranja);
-  margin-bottom: 15px;
-  text-align: center;
-}
-.kpi-container {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin: 20px 0;
-  text-align: center;
-}
-.kpi-box {
-  background: linear-gradient(135deg, #f9f3e9, #f1e0c5);
-  padding: 15px;
-  border-radius: 10px;
-  min-width: 130px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-.kpi-value {
-  font-size: 28px;
-  font-weight: bold;
-  color: var(--naranja);
-  margin-bottom: 5px;
-}
-.kpi-label {
-  font-size: 13px;
-  color: #555;
-}
-.section {
-  margin-bottom: 40px;
-}
-.section h2 {
-  color: var(--azul);
-  border-left: 4px solid var(--naranja);
-  padding-left: 12px;
-  margin-bottom: 20px;
-}
-.grafico-container {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  margin-bottom: 25px;
-}
-canvas {
-  max-width: 100%;
-  height: 300px !important;
-}
-#loader {
-  text-align: center;
-  padding: 60px 20px;
-  font-size: 20px;
-  color: var(--azul);
-}
-.vaca {
-  font-size: 60px;
-  animation: mover 1.2s infinite alternate;
-  margin-bottom: 20px;
-}
-@keyframes mover {
-  from { transform: translateX(-8px) rotate(-5deg); }
-  to { transform: translateX(8px) rotate(5deg); }
-}
-.btn-volver {
-  background: var(--azul);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 30px auto 0;
-  font-size: 16px;
-  display: block;
-  font-weight: bold;
-  transition: all 0.2s;
-}
-.btn-volver:hover {
-  background: #1e3a5f;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-.btn-volver:active {
-  transform: translateY(0);
-}
-.error {
-  color: #c0392b;
-  padding: 20px;
-  background: #fadbd8;
-  border-radius: 10px;
-  margin: 30px 0;
-  text-align: center;
-  font-size: 16px;
-  display: none;
-  border-left: 4px solid #c0392b;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--fondo); color: #2d3436; line-height: 1.5; padding: 20px;}
+.container { max-width: 1300px; margin: auto; padding: 25px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);}
+
+/* ENCABEZADOS CENTRADOS */
+.header { text-align: center; padding: 10px 0 25px 0; margin-bottom: 25px; border-bottom: 3px solid var(--azul); position: relative; }
+.header h1 { color: var(--azul); font-size: 32px; margin: 0; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; }
+.header-actions { position: absolute; right: 0; top: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;}
+
+h2, h3 { text-align: center; font-weight: 800; color: var(--azul); margin-bottom: 15px; }
+.card-title-container { text-align: center; margin-bottom: 20px; }
+.card-title { font-size: 18px; font-weight: 800; color: var(--azul); display: inline-block; padding-bottom: 8px; border-bottom: 3px solid var(--azul-claro); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* BOTONES */
+.btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); font-size: 14px;}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.15); }
+.btn-primary { background: var(--azul); color: white; }
+.btn-secondary { background: var(--gris); color: white; }
+
+.btn-volver { background: var(--rojo); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; margin: 40px auto 0; font-size: 15px; display: block; font-weight: bold; transition: all 0.2s; box-shadow: 0 4px 8px rgba(214,48,49,0.3); }
+.btn-volver:hover { background: #b33939; transform: scale(1.02); }
+
+/* TARJETAS DE SECCIÓN */
+.card { background: var(--blanco); border-radius: 12px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-top: 5px solid var(--azul-claro); }
+
+/* KPI GRID VIVIDOS */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 30px; }
+.kpi-card { background: var(--blanco); padding: 20px 15px; border-radius: 12px; text-align: center; border-top: 5px solid var(--gris); box-shadow: 0 4px 10px rgba(0,0,0,0.08); transition: transform 0.2s; }
+.kpi-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.12); }
+
+.kpi-card.kpi-azul { border-top-color: var(--azul); }
+.kpi-card.kpi-verde { border-top-color: var(--verde); }
+.kpi-card.kpi-tierra { border-top-color: var(--tierra); }
+.kpi-card.kpi-morado { border-top-color: var(--morado); }
+.kpi-card.kpi-amarillo { border-top-color: var(--amarillo); }
+.kpi-card.kpi-rojo { border-top-color: var(--rojo); }
+
+.kpi-label { font-size: 12px; color: var(--azul); font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+.kpi-value { font-size: 32px; font-weight: 900; margin: 5px 0; color: #2d3436; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+.kpi-unit { font-size: 11px; font-weight: 700; color: #fff; background: var(--gris); padding: 4px 10px; border-radius: 20px; display: inline-block; letter-spacing: 0.5px; margin-top: 5px; }
+
+.kpi-azul .kpi-unit { background: var(--azul); }
+.kpi-verde .kpi-unit { background: var(--verde); }
+.kpi-tierra .kpi-unit { background: var(--tierra); }
+.kpi-morado .kpi-unit { background: var(--morado); }
+.kpi-amarillo .kpi-unit { background: #e67e22; }
+.kpi-rojo .kpi-unit { background: var(--rojo); }
+
+/* GRÁFICOS */
+.chart-container { position: relative; height: 380px; width: 100%; margin: 15px 0; }
+
+/* LOADER ANIMADO */
+#loader { text-align: center; padding: 80px 20px; height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.vaca { font-size: 70px; margin-bottom: 20px; animation: mover 0.8s infinite alternate ease-in-out; }
+@keyframes mover { from { transform: translateY(0) scale(1); } to { transform: translateY(-15px) scale(1.1); } }
+#loader p { font-weight: 800; color: var(--azul); font-size: 18px; letter-spacing: 1px; text-transform: uppercase; }
+
+.error { color: #c0392b; padding: 20px; background: #fadbd8; border-radius: 10px; margin: 30px 0; text-align: center; font-size: 16px; display: none; border-left: 5px solid #c0392b; font-weight: bold; }
+
+@media print {
+  .header-actions, .btn-volver { display: none !important; }
+  .container { box-shadow: none; padding: 0; }
+  body { background: white; }
+  .card { page-break-inside: avoid; border: 1px solid #eee; box-shadow: none; }
 }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>🥛 Reporte de Producción de Leche (Últimos 30 días)</h1>
+  
+  <div class="header">
+    <h1>🥛 Reporte de Producción de Leche</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
+      <button class="btn btn-primary" onclick="location.reload()">🔄 Actualizar</button>
+    </div>
+  </div>
 
   <div id="loader">
     <div class="vaca">🐄</div>
-    <div>Cargando datos de producción...</div>
+    <p>Procesando Registros de Ordeño...</p>
   </div>
 
   <div id="contenido" style="display:none">
-    <div class="section">
-      <div class="kpi-container">
-        <div class="kpi-box">
-          <div class="kpi-value" id="kpi-prod-total">0</div>
-          <div class="kpi-label">Lts Totales</div>
-        </div>
-        <div class="kpi-box">
-          <div class="kpi-value" id="kpi-prom-dia">0.0</div>
-          <div class="kpi-label">Prom. Diario (Lts)</div>
-        </div>
-        <div class="kpi-box">
-          <div class="kpi-value" id="kpi-vacas-prom">0</div>
-          <div class="kpi-label">Vacas Ordeñadas (Prom.)</div>
-        </div>
-        <div class="kpi-box">
-          <div class="kpi-value" id="kpi-dias-reg">0</div>
-          <div class="kpi-label">Días con Registros</div>
-        </div>
-        <div class="kpi-box">
-          <div class="kpi-value" id="kpi-sem-prod">0.0</div>
-          <div class="kpi-label">Lts Semana</div>
-        </div>
-        <div class="kpi-box">
-          <div class="kpi-value" id="kpi-quinc-prod">0.0</div>
-          <div class="kpi-label">Lts Quincena</div>
-        </div>
-        <div class="kpi-box">
-          <div class="kpi-value" id="kpi-mes-prod">0.0</div>
-          <div class="kpi-label">Lts Mes</div>
-        </div>
+    
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-azul">
+        <div class="kpi-label">Lts Totales (30d)</div>
+        <div class="kpi-value" id="kpi-prod-total" style="color: var(--azul);">0</div>
+        <div class="kpi-unit">Litros</div>
+      </div>
+      <div class="kpi-card kpi-verde">
+        <div class="kpi-label">Promedio Diario</div>
+        <div class="kpi-value" id="kpi-prom-dia" style="color: var(--verde);">0.0</div>
+        <div class="kpi-unit">Lts / día</div>
+      </div>
+      <div class="kpi-card kpi-tierra">
+        <div class="kpi-label">Vacas Ordeñadas</div>
+        <div class="kpi-value" id="kpi-vacas-prom" style="color: var(--tierra);">0</div>
+        <div class="kpi-unit">Promedio Diario</div>
+      </div>
+      <div class="kpi-card kpi-morado">
+        <div class="kpi-label">Días Registrados</div>
+        <div class="kpi-value" id="kpi-dias-reg" style="color: var(--morado);">0</div>
+        <div class="kpi-unit">Días Hábiles</div>
+      </div>
+      <div class="kpi-card kpi-amarillo">
+        <div class="kpi-label">Prod. Semanal</div>
+        <div class="kpi-value" id="kpi-sem-prod" style="color: #e67e22;">0.0</div>
+        <div class="kpi-unit">Litros</div>
+      </div>
+      <div class="kpi-card kpi-rojo">
+        <div class="kpi-label">Prod. Quincenal</div>
+        <div class="kpi-value" id="kpi-quinc-prod" style="color: var(--rojo);">0.0</div>
+        <div class="kpi-unit">Litros</div>
       </div>
     </div>
 
-    <div class="section">
-      <h2>Producción Diaria de Leche</h2>
-      <div class="grafico-container">
+    <div class="card" style="border-top-color: var(--azul);">
+      <div class="card-title-container"><div class="card-title">📈 Curva de Producción Diaria de Leche</div></div>
+      <div class="chart-container">
         <canvas id="graficoProdDiaria"></canvas>
       </div>
     </div>
 
-    <div class="section">
-      <h2>Producción por Turno (Avío)</h2>
-      <div class="grafico-container">
+    <div class="card" style="border-top-color: var(--verde);">
+      <div class="card-title-container"><div class="card-title" style="color: var(--verde); border-color: var(--verde-claro);">⏱️ Rendimiento por Turno de Ordeño (Avío)</div></div>
+      <div class="chart-container">
         <canvas id="graficoProdAvio"></canvas>
       </div>
     </div>
 
-    <!-- Nueva Sección: Distribución por Rangos -->
-    <div class="section">
-      <h2>Distribución de Animales por Rango de Producción (Lts/Día)</h2>
-      <div class="grafico-container">
+    <div class="card" style="border-top-color: var(--morado);">
+      <div class="card-title-container"><div class="card-title" style="color: var(--morado); border-color: #a29bfe;">⚖️ Distribución de Animales por Rango (Lts/Día)</div></div>
+      <div class="chart-container">
         <canvas id="graficoDistribucionRangos"></canvas>
       </div>
     </div>
 
-    <button class="btn-volver" id="btnVolver">⬅ Cerrar reporte y volver al panel</button>
+    <button class="btn-volver" id="btnVolver">✕ Cerrar reporte y volver al panel principal</button>
   </div>
 
   <div id="error" class="error"></div>
 </div>
 
 <script>
+// 🔥 PLUGIN CUSTOM PARA EFECTO 3D EN LAS GRÁFICAS
+const pluginSombra3D = {
+  id: 'sombra3D',
+  beforeDatasetsDraw: function(chart) {
+    const ctx = chart.ctx;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.35)'; // Sombra oscura
+    ctx.shadowBlur = 10; // Difuminado
+    ctx.shadowOffsetX = 4; // Desplazamiento X
+    ctx.shadowOffsetY = 4; // Desplazamiento Y
+  },
+  afterDatasetsDraw: function(chart) {
+    chart.ctx.restore();
+  }
+};
+Chart.register(pluginSombra3D);
+
 let datosReporte = {};
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -209,8 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
 
-  console.log("📧 Email:", email);
-
   fetch("https://pysiga.d-alexjose.workers.dev", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -223,33 +211,31 @@ document.addEventListener('DOMContentLoaded', function() {
   .then(data => {
     console.log("✅ Datos de leche recibidos:", data);
 
-    if (!data.ok) {
-      throw new Error(data.error || "Respuesta inválida del servidor");
-    }
+    if (!data.ok) throw new Error(data.error || "Respuesta inválida del servidor");
 
     datosReporte = data;
 
-    // KPIs Antiguos
-    document.getElementById("kpi-prod-total").textContent = datosReporte.kpis.produccionTotal.toFixed(2);
-    document.getElementById("kpi-prom-dia").textContent = datosReporte.kpis.promedioDiario.toFixed(2);
-    document.getElementById("kpi-vacas-prom").textContent = datosReporte.kpis.vacasPromedioOrdeñadas.toFixed(1);
+    // Poblar KPIs
+    document.getElementById("kpi-prod-total").textContent = Math.round(datosReporte.kpis.produccionTotal).toLocaleString();
+    document.getElementById("kpi-prom-dia").textContent = datosReporte.kpis.promedioDiario.toFixed(1);
+    document.getElementById("kpi-vacas-prom").textContent = Math.round(datosReporte.kpis.vacasPromedioOrdeñadas);
     document.getElementById("kpi-dias-reg").textContent = datosReporte.kpis.diasConRegistros;
-
-    // NUEVOS KPIs
-    document.getElementById("kpi-sem-prod").textContent = datosReporte.kpis.resumen.semanal.produccion.toFixed(2);
-    document.getElementById("kpi-quinc-prod").textContent = datosReporte.kpis.resumen.quincenal.produccion.toFixed(2);
-    document.getElementById("kpi-mes-prod").textContent = datosReporte.kpis.resumen.mensual.produccion.toFixed(2);
+    document.getElementById("kpi-sem-prod").textContent = Math.round(datosReporte.kpis.resumen.semanal.produccion).toLocaleString();
+    document.getElementById("kpi-quinc-prod").textContent = Math.round(datosReporte.kpis.resumen.quincenal.produccion).toLocaleString();
 
     renderizarGraficoProdDiaria();
     renderizarGraficoProdAvio();
-    renderizarGraficoDistribucionRangos(); // Nuevo
+    renderizarGraficoDistribucionRangos();
 
     document.getElementById("loader").style.display = "none";
     document.getElementById("contenido").style.display = "block";
 
     document.getElementById("btnVolver").addEventListener("click", function() {
-      console.log("✅ Cerrando pestaña del reporte...");
-      window.close();
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.close();
+      }
     });
   })
   .catch(err => {
@@ -261,8 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function renderizarGraficoProdDiaria() {
   const datos = datosReporte.prodDiaria;
   if (datos.length === 0) {
-    document.getElementById("graficoProdDiaria").parentElement.innerHTML =
-      "<p style='text-align:center;color:#999'>No hay datos de producción diaria</p>";
+    document.getElementById("graficoProdDiaria").parentElement.innerHTML = "<p style='text-align:center;color:#999;font-weight:bold;padding:40px;'>No hay datos de producción diaria registrados.</p>";
     return;
   }
 
@@ -275,41 +260,25 @@ function renderizarGraficoProdDiaria() {
     data: {
       labels: fechas,
       datasets: [{
-        label: 'Producción (Lts)',
+        label: 'Producción Total Diaria (Lts)',
         data: producciones,
-        borderColor: '#f39c12',
-        backgroundColor: 'rgba(243, 156, 18, 0.1)',
-        borderWidth: 3,
+        borderColor: '#0984e3', // Azul eléctrico
+        backgroundColor: 'rgba(9, 132, 227, 0.15)',
+        borderWidth: 4,
         fill: true,
-        tension: 0.3,
+        tension: 0.4, // Curva suave 3D
         pointRadius: 5,
-        pointBackgroundColor: '#f39c12',
-        pointHoverRadius: 7,
-        pointHoverBackgroundColor: '#1e3a5f'
+        pointBackgroundColor: '#0984e3',
+        pointHoverRadius: 8,
+        pointHoverBackgroundColor: '#00b894'
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true },
-        tooltip: {
-          callbacks: {
-            label: context => `Producción: ${context.parsed.y} Lts`
-          }
-        }
-      },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: true, labels: { font: { weight: 'bold', size: 14 } } } },
       scales: {
-        y: {
-          beginAtZero: true,
-          title: { display: true, text: 'Litros' },
-          grid: { color: 'rgba(0,0,0,0.05)' }
-        },
-        x: {
-          title: { display: true, text: 'Fecha' },
-          grid: { display: false },
-          ticks: { maxRotation: 45, autoSkip: true, maxTicksLimit: 10 }
-        }
+        y: { beginAtZero: true, ticks: { font: { weight: 'bold'} } },
+        x: { ticks: { font: { weight: 'bold'}, maxRotation: 45, autoSkip: true, maxTicksLimit: 12 } }
       }
     }
   });
@@ -318,21 +287,15 @@ function renderizarGraficoProdDiaria() {
 function renderizarGraficoProdAvio() {
   const datos = datosReporte.prodAvio;
   if (datos.length === 0) {
-    document.getElementById("graficoProdAvio").parentElement.innerHTML =
-      "<p style='text-align:center;color:#999'>No hay datos por Avío</p>";
+    document.getElementById("graficoProdAvio").parentElement.innerHTML = "<p style='text-align:center;color:#999;font-weight:bold;padding:40px;'>No hay datos por Avío registrados.</p>";
     return;
   }
 
   const datosAgrupados = {};
   datos.forEach(d => {
-    if (!datosAgrupados[d.fecha]) {
-      datosAgrupados[d.fecha] = { am: 0, pm: 0 };
-    }
-    if (d.avio === 'am') {
-      datosAgrupados[d.fecha].am += d.produccion;
-    } else if (d.avio === 'pm') {
-      datosAgrupados[d.fecha].pm += d.produccion;
-    }
+    if (!datosAgrupados[d.fecha]) datosAgrupados[d.fecha] = { am: 0, pm: 0 };
+    if (d.avio === 'am') datosAgrupados[d.fecha].am += d.produccion;
+    else if (d.avio === 'pm') datosAgrupados[d.fecha].pm += d.produccion;
   });
 
   const fechas = Object.keys(datosAgrupados).sort();
@@ -346,46 +309,46 @@ function renderizarGraficoProdAvio() {
       labels: fechas,
       datasets: [
         {
-          label: 'Mañana (AM)',
+          label: 'Ordeño de Mañana (AM)',
           data: produccionAM,
-          backgroundColor: '#f1c40f',
-          borderColor: '#f39c12',
-          borderWidth: 1
+          backgroundColor: '#00b894', // Verde vivo
+          borderColor: '#000000',
+          borderWidth: 0,
+          borderRadius: 6
         },
         {
-          label: 'Tarde (PM)',
+          label: 'Ordeño de Tarde (PM)',
           data: produccionPM,
-          backgroundColor: '#e67e22',
-          borderColor: '#d35400',
-          borderWidth: 1
+          backgroundColor: '#e17055', // Tierra/Naranja vivo
+          borderColor: '#000000',
+          borderWidth: 0,
+          borderRadius: 6
         }
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'top' },
-        tooltip: {
-          callbacks: {
-            label: context => `${context.dataset.label}: ${context.parsed.y} Lts`
-          }
-        }
-      },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'top', labels: { font: { weight: 'bold', size: 14 } } } },
       scales: {
-        y: { beginAtZero: true, title: { display: true, text: 'Litros' } },
-        x: { title: { display: true, text: 'Fecha' } }
+        y: { beginAtZero: true, stacked: true, ticks: { font: { weight: 'bold'} } },
+        x: { stacked: true, ticks: { font: { weight: 'bold'} } }
       }
     }
   });
 }
 
-// Nuevo: Función para renderizar la gráfica de distribución por rangos
 function renderizarGraficoDistribucionRangos() {
   const distribucion = datosReporte.distribucionPorRango;
+  if (!distribucion || Object.keys(distribucion).length === 0) {
+      document.getElementById("graficoDistribucionRangos").parentElement.innerHTML = "<p style='text-align:center;color:#999;font-weight:bold;padding:40px;'>No hay datos suficientes para distribución.</p>";
+      return;
+  }
 
   const rangos = Object.keys(distribucion);
   const cantidades = Object.values(distribucion);
+  
+  // Paleta dinámica viva
+  const bgColors = ['#0984e3', '#00b894', '#fdcb6e', '#6c5ce7', '#e17055', '#d63031'];
 
   const ctx = document.getElementById("graficoDistribucionRangos").getContext("2d");
   new Chart(ctx, {
@@ -393,48 +356,19 @@ function renderizarGraficoDistribucionRangos() {
     data: {
       labels: rangos,
       datasets: [{
-        label: 'Cantidad de Animales',
+        label: 'Número de Vacas',
         data: cantidades,
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.7)',
-          'rgba(54, 162, 235, 0.7)',
-          'rgba(255, 205, 86, 0.7)',
-          'rgba(75, 192, 192, 0.7)',
-          'rgba(153, 102, 255, 0.7)',
-          'rgba(255, 159, 64, 0.7)'
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 205, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 1
+        backgroundColor: bgColors.slice(0, rangos.length),
+        borderWidth: 0,
+        borderRadius: 8
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true },
-        tooltip: {
-          callbacks: {
-            label: context => `Animales: ${context.parsed.y}`
-          }
-        }
-      },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
       scales: {
-        y: {
-          beginAtZero: true,
-          title: { display: true, text: 'Cantidad de Animales' },
-          grid: { color: 'rgba(0,0,0,0.05)' }
-        },
-        x: {
-          title: { display: true, text: 'Rango de Producción (Lts/Día)' },
-          grid: { display: false }
-        }
+        y: { beginAtZero: true, title: { display: true, text: 'CANTIDAD DE VACAS', font: {weight: 'bold', size: 13} }, ticks: { stepSize: 1, font: { weight: 'bold'} } },
+        x: { title: { display: true, text: 'RANGO DE LITROS / DÍA', font: {weight: 'bold', size: 13} }, ticks: { font: { weight: 'bold', size: 13} } }
       }
     }
   });
@@ -443,7 +377,7 @@ function renderizarGraficoDistribucionRangos() {
 function mostrarError(mensaje) {
   document.getElementById("loader").style.display = "none";
   const err = document.getElementById("error");
-  err.textContent = mensaje;
+  err.textContent = "❌ " + mensaje;
   err.style.display = "block";
 }
 </script>
